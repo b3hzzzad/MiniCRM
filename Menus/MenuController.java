@@ -22,25 +22,21 @@ public class MenuController {
         while (true) {
             printMainMenu();
 
-            try {
-                int option = console.getInt("Enter option: ");
+            int option = console.getInt("Enter option: ");
 
-                switch (option) {
-                    case 1 -> new ProductMenu(console, productManager).start();
-                    case 2 -> new CustomerMenu(console, customerManager).start();
-                    case 3 -> new OrderMenu(console, customerManager, productManager).start();
-                    case 4 -> saveAllData();
-                    case 5 -> loadAllData();
-                    case 6 -> {
-                        System.out.println("Exiting program...");
-                        return;
-                    }
-                    default -> System.out.println("Invalid input.");
+            switch (option) {
+                case 1 -> new ProductMenu(console, productManager).start();
+                case 2 -> new CustomerMenu(console, customerManager).start();
+                case 3 -> new OrderMenu(console, customerManager, productManager).start();
+                case 4 -> saveAllData();
+                case 5 -> loadAllData();
+                case 6 -> {
+                    System.out.println("Exiting program...");
+                    return;
                 }
-
-            } catch (InvalidInputException e) {
-                System.out.println("Error: " + e.getMessage());
+                default -> System.out.println("Invalid input.");
             }
+
         }
     }
 

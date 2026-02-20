@@ -40,7 +40,6 @@ public class ProductManager implements IProductManager {
     }
 
 
-
     @Override
     public Products getProduct(int id) throws ProductNotFoundException {
         for (Products p : arrayList) {

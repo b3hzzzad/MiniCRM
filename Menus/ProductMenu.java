@@ -36,7 +36,9 @@ public class ProductMenu {
                     case 2 -> productManager.showProducts();
                     case 3 -> searchProduct();
                     case 4 -> deleteProduct();
-                    case 5 -> { return; }
+                    case 5 -> {
+                        return;
+                    }
                     default -> System.out.println("Invalid input.");
                 }
 
@@ -46,53 +48,82 @@ public class ProductMenu {
         }
     }
 
-    private void addProductMenu() throws InvalidInputException, DuplicatedException {
+    private void addProductMenu() {
         System.out.println("""
                 ===== ADD PRODUCT =====
                 1. Add Book
                 2. Add Car
                 3. Back""");
+        try {
 
-        int option = console.getInt("Choose: ");
 
-        switch (option) {
-            case 1 -> addBook();
-            case 2 -> addCar();
-            case 3 -> { return; }
-            default -> System.out.println("Invalid input.");
+            int option = console.getInt("Choose: ");
+
+            switch (option) {
+                case 1 -> addBook();
+                case 2 -> addCar();
+                case 3 -> {
+                    return;
+                }
+                default -> System.out.println("Invalid input.");
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
-    private void addBook() throws InvalidInputException, DuplicatedException {
-        int id = console.getInt("Enter Book ID: ");
-        String name = console.getString("Enter Book Name: ");
-        String author = console.getString("Enter Author: ");
+    private void addBook() {
+        try {
 
-        productManager.addProduct(new Book(id, name, author));
-        System.out.println("Book added successfully.");
+            int id = console.getInt("Enter Book ID: ");
+            String name = console.getString("Enter Book Name: ");
+            String author = console.getString("Enter Author: ");
+
+            productManager.addProduct(new Book(id, name, author));
+            System.out.println("Book added successfully.");
+        } catch (DuplicatedException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
-    private void addCar() throws InvalidInputException, DuplicatedException {
-        int id = console.getInt("Enter Car ID: ");
-        String name = console.getString("Enter Car Name: ");
-        double price = console.getDouble("Enter Price: ");
+    private void addCar() {
+        try {
 
-        productManager.addProduct(new Car(id, name, price));
-        System.out.println("Car added successfully.");
+            int id = console.getInt("Enter Car ID: ");
+            String name = console.getString("Enter Car Name: ");
+            double price = console.getDouble("Enter Price: ");
+
+            productManager.addProduct(new Car(id, name, price));
+            System.out.println("Car added successfully.");
+        } catch (RuntimeException | DuplicatedException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
-    private void searchProduct() throws InvalidInputException, ProductNotFoundException {
-        int id = console.getInt("Enter Product ID: ");
-        Products product = productManager.getProduct(id);
+    private void searchProduct() {
 
-        System.out.println("===== PRODUCT FOUND =====");
-        System.out.println(product);
+        try {
+            int id = console.getInt("Enter Product ID: ");
+
+            Products product = productManager.getProduct(id);
+
+            System.out.println("===== PRODUCT FOUND =====");
+            System.out.println(product);
+        } catch (RuntimeException | ProductNotFoundException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
-    private void deleteProduct() throws InvalidInputException, ProductNotFoundException {
-        int id = console.getInt("Enter Product ID: ");
-        productManager.removeProduct(id);
+    private void deleteProduct() {
+        try {
 
-        System.out.println("Product deleted successfully.");
+
+            int id = console.getInt("Enter Product ID: ");
+            productManager.removeProduct(id);
+
+            System.out.println("Product deleted successfully.");
+        } catch (ProductNotFoundException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 }

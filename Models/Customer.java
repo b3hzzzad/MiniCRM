@@ -33,7 +33,6 @@ public class Customer {
         return "ID: " + id + " | Name: " + name;
     }
 
-
     public void orderProduct(Products theOrderProduct) throws DuplicatedException {
         for (Products p : arrayList) {
             if (theOrderProduct.getId() == p.getId()) {

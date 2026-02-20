@@ -34,7 +34,9 @@ public class CustomerMenu {
                     case 2 -> customerManager.showCustomers();
                     case 3 -> searchCustomer();
                     case 4 -> deleteCustomer();
-                    case 5 -> { return; }
+                    case 5 -> {
+                        return;
+                    }
                     default -> System.out.println("Invalid input.");
                 }
 
@@ -44,20 +46,35 @@ public class CustomerMenu {
         }
     }
 
-    private void addCustomer() throws InvalidInputException, DuplicatedException {
-        int id = console.getInt("Enter Customer ID: ");
-        String name = console.getString("Enter Customer Name: ");
+    private void addCustomer() {
+        try {
 
-        customerManager.addCustomer(new Customer(id, name));
+            int id = console.getInt("Enter Customer ID: ");
+            String name = console.getString("Enter Customer Name: ");
+
+            customerManager.addCustomer(new Customer(id, name));
+        } catch (DuplicatedException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
-    private void searchCustomer() throws InvalidInputException, CustomerNotFoundException {
-        int id = console.getInt("Enter Customer ID: ");
-        System.out.println(customerManager.getCustomer(id));
+    private void searchCustomer() {
+        try {
+
+            int id = console.getInt("Enter Customer ID: ");
+            System.out.println(customerManager.getCustomer(id));
+        } catch (CustomerNotFoundException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
-    private void deleteCustomer() throws InvalidInputException, CustomerNotFoundException {
-        int id = console.getInt("Enter Customer ID: ");
-        customerManager.removeCustomer(id);
+    private void deleteCustomer() {
+        try {
+
+            int id = console.getInt("Enter Customer ID: ");
+            customerManager.removeCustomer(id);
+        } catch (CustomerNotFoundException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 }

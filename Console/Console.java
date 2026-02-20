@@ -1,58 +1,61 @@
 package Console;
 
-import Exceptions.InvalidInputException;
-
 import java.util.Scanner;
 
 public class Console {
 
     private final Scanner scanner = new Scanner(System.in);
 
-    public int getInt(String msg) throws InvalidInputException {
-        System.out.println(msg);
+    public int getInt(String msg) {
+        while (true) {
+            System.out.print(msg);
 
-        if (!scanner.hasNextInt()) {
-            scanner.next();
-            throw new InvalidInputException("Input must be a valid integer.");
+            try {
+                int value = Integer.parseInt(scanner.nextLine().trim());
+
+                if (value < 0) {
+                    System.out.println("Integer cannot be negative.");
+                    continue;
+                }
+
+                return value;
+
+            } catch (NumberFormatException e) {
+                System.out.println("Input must be a valid integer.");
+            }
         }
-
-        int value = scanner.nextInt();
-        scanner.nextLine();
-
-        if (value < 0) {
-            throw new InvalidInputException("Integer cannot be negative.");
-        }
-
-        return value;
     }
 
-    public String getString(String msg) throws InvalidInputException {
-        System.out.println(msg);
+    public double getDouble(String msg) {
+        while (true) {
+            System.out.print(msg);
 
-        String value = scanner.nextLine().trim();
+            try {
+                double value = Double.parseDouble(scanner.nextLine().trim());
 
-        if (value.isEmpty()) {
-            throw new InvalidInputException("String cannot be empty.");
+                if (value < 0) {
+                    System.out.println("Double value cannot be negative.");
+                    continue;
+                }
+
+                return value;
+
+            } catch (NumberFormatException e) {
+                System.out.println("Input must be a valid decimal number.");
+            }
         }
-
-        return value;
     }
 
-    public double getDouble(String msg) throws InvalidInputException {
-        System.out.println(msg);
+    public String getString(String msg) {
+        while (true) {
+            System.out.print(msg);
+            String value = scanner.nextLine().trim();
 
-        if (!scanner.hasNextDouble()) {
-            scanner.next();
-            throw new InvalidInputException("Input must be a valid decimal number.");
+            if (value.isEmpty()) {
+                System.out.println("String cannot be empty.");
+            } else {
+                return value;
+            }
         }
-
-        double value = scanner.nextDouble();
-        scanner.nextLine();
-
-        if (value < 0) {
-            throw new InvalidInputException("Double value cannot be negative.");
-        }
-
-        return value;
     }
 }

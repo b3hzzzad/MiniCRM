@@ -37,7 +37,9 @@ public class OrderMenu {
                     case 1 -> placeOrder();
                     case 2 -> showOrders();
                     case 3 -> cancelOrder();
-                    case 4 -> { return; }
+                    case 4 -> {
+                        return;
+                    }
                     default -> System.out.println("Invalid input.");
                 }
 
@@ -47,39 +49,56 @@ public class OrderMenu {
         }
     }
 
-    private void placeOrder() throws InvalidInputException, CustomerNotFoundException, ProductNotFoundException, DuplicatedException {
-        int customerId = console.getInt("Enter Customer ID: ");
-        int productId = console.getInt("Enter Product ID: ");
+    private void placeOrder() {
+        try {
 
-        Customer customer = customerManager.getCustomer(customerId);
-        Products product = productManager.getProduct(productId);
+            int customerId = console.getInt("Enter Customer ID: ");
+            int productId = console.getInt("Enter Product ID: ");
 
-        customer.orderProduct(product);
-        System.out.println("Order placed successfully.");
-    }
+            Customer customer = customerManager.getCustomer(customerId);
+            Products product = productManager.getProduct(productId);
 
-    private void showOrders() throws InvalidInputException, CustomerNotFoundException {
-        int customerId = console.getInt("Enter Customer ID: ");
-        Customer customer = customerManager.getCustomer(customerId);
-
-        var orders = customer.getOrders();
-
-        if (orders.isEmpty()) {
-            System.out.println("This customer has no orders.");
-            return;
+            customer.orderProduct(product);
+            System.out.println("Order placed successfully.");
+        } catch (CustomerNotFoundException | ProductNotFoundException |
+                 DuplicatedException e) {
+            System.out.println("Error: " + e.getMessage());
         }
-
-        System.out.println("===== CUSTOMER ORDERS =====");
-        orders.forEach(System.out::println);
     }
 
-    private void cancelOrder() throws InvalidInputException, CustomerNotFoundException, ProductNotFoundException {
-        int customerId = console.getInt("Enter Customer ID: ");
-        int productId = console.getInt("Enter Product ID to cancel: ");
+    private void showOrders() {
+        try {
 
-        Customer customer = customerManager.getCustomer(customerId);
-        customer.deleteOrder(productId);
 
-        System.out.println("Order canceled successfully.");
+            int customerId = console.getInt("Enter Customer ID: ");
+            Customer customer = customerManager.getCustomer(customerId);
+
+            var orders = customer.getOrders();
+
+            if (orders.isEmpty()) {
+                System.out.println("This customer has no orders.");
+                return;
+            }
+
+            System.out.println("===== CUSTOMER ORDERS =====");
+            orders.forEach(System.out::println);
+        } catch (CustomerNotFoundException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    private void cancelOrder() {
+        try {
+
+            int customerId = console.getInt("Enter Customer ID: ");
+            int productId = console.getInt("Enter Product ID to cancel: ");
+
+            Customer customer = customerManager.getCustomer(customerId);
+            customer.deleteOrder(productId);
+
+            System.out.println("Order canceled successfully.");
+        } catch (ProductNotFoundException | CustomerNotFoundException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 }

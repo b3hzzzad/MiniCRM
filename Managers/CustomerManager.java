@@ -28,7 +28,6 @@ public class CustomerManager implements ICustomerManager {
         Database.saveCustomers(arrayList);
     }
 
-
     public ArrayList<Customer> getCustomers() {
         return new ArrayList<>(arrayList);
     }
