@@ -1,10 +1,12 @@
 package Console;
 
+import Exceptions.InvalidInputException;
+
+import java.io.InputStream;
 import java.util.Scanner;
 
 public class Console {
-
-    private final Scanner scanner = new Scanner(System.in);
+    private Scanner scanner = new Scanner(System.in);
 
     public int getInt(String msg) {
         while (true) {
@@ -45,7 +47,6 @@ public class Console {
             }
         }
     }
-
     public String getString(String msg) {
         while (true) {
             System.out.print(msg);

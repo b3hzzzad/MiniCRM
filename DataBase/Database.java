@@ -1,48 +1,55 @@
 package DataBase;
 
+import Interfaces.Product;
+import Models.Book;
 import Models.Customer;
-import Models.Products;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
-public class Database {
+public class DataBase {
 
     private static final Gson gson = new Gson();
 
-    public static void saveProducts(ArrayList<Products> products) {
-        try (FileWriter writer = new FileWriter("products.json")) {
-            gson.toJson(products, writer);
-            System.out.println("Products saved.");
-        } catch (Exception e) {
-            System.out.println("Error saving products: " + e.getMessage());
-        }
+
+    // -------------------- Products --------------------
+    public static ArrayList<Product> loadProducts() throws IOException {
+        return load("products.json", new TypeToken<ArrayList<Book>>(){}.getType());
     }
 
-    public static ArrayList<Products> loadProducts() {
-        try (FileReader reader = new FileReader("products.json")) {
-            return gson.fromJson(reader, new TypeToken<ArrayList<Products>>(){}.getType());
-        } catch (Exception e) {
-            return new ArrayList<>();
-        }
+    public static void saveBooks(ArrayList<Product> books) {
+        save("products.json", books);
+    }
+
+    // -------------------- CUSTOMERS (unchanged) --------------------
+    public static ArrayList<Customer> loadCustomers() throws IOException{
+        return load("customers.json", new TypeToken<ArrayList<Customer>>(){}.getType());
     }
 
     public static void saveCustomers(ArrayList<Customer> customers) {
-        try (FileWriter writer = new FileWriter("customers.json")) {
-            gson.toJson(customers, writer);
-            System.out.println("Customers saved.");
+        save("customers.json", customers);
+    }
+
+    // -------------------- GENERIC SAVE/LOAD --------------------
+    private static <T> void save(String fileName, T data) {
+        try (FileWriter writer = new FileWriter(fileName)) {
+            gson.toJson(data, writer);
+            System.out.println(fileName + " saved.");
         } catch (Exception e) {
-            System.out.println("Error saving customers: " + e.getMessage());
+            System.out.println("Error saving " + fileName + ": " + e.getMessage());
         }
     }
 
-    public static ArrayList<Customer> loadCustomers() {
-        try (FileReader reader = new FileReader("customers.json")) {
-            return gson.fromJson(reader, new TypeToken<ArrayList<Customer>>(){}.getType());
+    private static <T> T load(String fileName, java.lang.reflect.Type type)throws IOException {
+        try (FileReader reader = new FileReader(fileName)) {
+            return gson.fromJson(reader, type);
         } catch (Exception e) {
-            return new ArrayList<>();
+            return (T) new ArrayList<>();
         }
     }
+
 }

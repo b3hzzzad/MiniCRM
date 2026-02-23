@@ -1,19 +1,19 @@
-import Console.Console;
 
-import Interfaces.ICustomerManager;
-import Interfaces.IProductManager;
+import Console.Console;
 import Managers.CustomerManager;
 import Managers.ProductManager;
-import Menus.MenuController;
+import Menu.MainMenu;
 
 public class Main {
+
+
     public static void main(String[] args) {
-        Console console = new Console();
-        IProductManager productManager = new ProductManager();
-        ICustomerManager customerManager = new CustomerManager();
+        var productManager = new ProductManager<>();
+        var customerManager = new CustomerManager();
+        var console = new Console();
 
-        MenuController controller = new MenuController(console, productManager, customerManager);
-        controller.start();
-
+        var menu = new MainMenu(console, productManager, customerManager);
+        menu.start();
     }
+
 }

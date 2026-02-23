@@ -1,14 +1,36 @@
 package Models;
 
-public class Book extends Products {
-    private String author;
+import Interfaces.Product;
 
-    public Book(int id, String name, String author) {
-        super(id, name);
-        this.author = author;
+public class Book implements Product {
+    private String id;
+    private String name;
+    private double price;
+
+    public Book(int id, String name, double price) {
+        this.id = "B-" + id;
+        this.name = name;
+        this.price = price;
     }
+
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public double getPrice() {
+        return price;
+    }
+
     @Override
     public String toString() {
-        return super.toString() + " | Author: " + author;
+        return "ID: " + id + " | Name: " + name + " | Price: " + price;
     }
 }

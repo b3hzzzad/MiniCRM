@@ -1,66 +1,55 @@
 package Managers;
 
-import DataBase.Database;
-import Exceptions.DuplicatedException;
+import Exceptions.DuplicateIdException;
 import Exceptions.ProductNotFoundException;
-import Interfaces.IProductManager;
-import Models.Products;
+import Interfaces.Product;
+import DataBase.DataBase;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
-public class ProductManager implements IProductManager {
+public class ProductManager<T extends Product> {
 
-    private ArrayList<Products> arrayList;
+    private ArrayList<Product> arrayList = new ArrayList<>();
 
-    public ProductManager() {
-        this.arrayList = Database.loadProducts();
+    public void addProduct(Product inputProduct) throws DuplicateIdException {
+        var condition = arrayList.stream()
+                .anyMatch(b -> Objects.equals(b.getId(), inputProduct.getId()));
+        if (condition) throw new DuplicateIdException("Product already exist.");
+        arrayList.add(inputProduct);
+
+        DataBase.saveBooks(arrayList);
+
     }
 
-    public ArrayList<Products> getAllProducts() {
-        return arrayList;
+    public void deleteProduct(int inputId) throws ProductNotFoundException {
+
+        var condition = arrayList.removeIf(b -> Integer.parseInt(b.getId()) == inputId);
+        if (!condition) throw new ProductNotFoundException("Product with this ID does not exist.");
+
+        DataBase.saveBooks(arrayList);
     }
 
-    @Override
-    public void setAllProducts(ArrayList<Products> products) {
-        this.arrayList = products;
-        Database.saveProducts(arrayList);
+    public void showAllProducts() throws ProductNotFoundException {
+        if (arrayList.isEmpty()) throw new ProductNotFoundException("Products are empty.");
+
+        arrayList.forEach(System.out::println);
     }
 
+    public Product searchProduct(String id) throws ProductNotFoundException {
 
-    @Override
-    public void addProduct(Products product) throws DuplicatedException {
-        for (Products p : arrayList) {
-            if (p.getId() == product.getId()) {
-                throw new DuplicatedException("Duplicate ID.");
-            }
-        }
-        arrayList.add(product);
-        Database.saveProducts(arrayList);
+        var obj = arrayList.stream()
+                .filter(b -> Objects.equals(b.getId(), id))
+                .findFirst()
+                .orElseThrow(() ->
+                        new ProductNotFoundException("Product with this ID does not exist."));
+
+        return obj;
+
     }
 
-
-    @Override
-    public Products getProduct(int id) throws ProductNotFoundException {
-        for (Products p : arrayList) {
-            if (id == p.getId()) return p;
-        }
-        throw new ProductNotFoundException("Product with this ID not found.");
+    //load data
+    public void setProducts(ArrayList<Product> Product) {
+        this.arrayList = Product;
     }
-
-    @Override
-    public void showProducts() {
-        if (arrayList.isEmpty()) {
-            throw new NullPointerException("No products available.");
-        }
-        for (Products p : arrayList) System.out.println(p.toString());
-    }
-
-    @Override
-    public void removeProduct(int id) throws ProductNotFoundException {
-        Products p = getProduct(id);
-        arrayList.remove(p);
-        Database.saveProducts(arrayList);
-    }
-
 }

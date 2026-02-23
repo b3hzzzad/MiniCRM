@@ -1,71 +1,52 @@
 package Managers;
 
-import DataBase.Database;
+import DataBase.DataBase;
 import Exceptions.CustomerNotFoundException;
-import Exceptions.DuplicatedException;
-import Interfaces.ICustomerManager;
+import Exceptions.DuplicateIdException;
 import Models.Customer;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
-public class CustomerManager implements ICustomerManager {
+public class CustomerManager {
+    private ArrayList<Customer> arrayList = new ArrayList<>();
 
-    private ArrayList<Customer> arrayList;
+    public void addCustomer(Customer inputCustomer) throws DuplicateIdException {
 
-    public CustomerManager() {
-        this.arrayList = Database.loadCustomers();
+        var condition = arrayList.stream()
+                .anyMatch(c -> Objects.equals(c.getId(), inputCustomer.getId()));
+        if (condition) throw new DuplicateIdException("Customer with this ID already exist.");
+
+        arrayList.add(inputCustomer);
+
+        DataBase.saveCustomers(arrayList);
     }
 
+    public void deleteCustomer(String id) throws CustomerNotFoundException {
+        var condition = arrayList.removeIf(customer -> Objects.equals(customer.getId(), id));
+        if (!condition) throw new CustomerNotFoundException("Customer with this ID does not exist.");
 
-    @Override
-    public void addCustomer(Customer customer) throws DuplicatedException {
-        for (Customer c : arrayList) {
-            if (c.getId() == customer.getId()) {
-                throw new DuplicatedException("Duplicate ID.");
-            }
-        }
-        arrayList.add(customer);
-        Database.saveCustomers(arrayList);
+        DataBase.saveCustomers(arrayList);
     }
 
-    public ArrayList<Customer> getCustomers() {
-        return new ArrayList<>(arrayList);
+    public Customer searchCustomer(String id) throws CustomerNotFoundException {
+        var obj = arrayList.stream()
+                .filter(b -> Objects.equals(b.getId(), id))
+                .findFirst()
+                .orElseThrow(() -> new CustomerNotFoundException("Customer with this ID does not exist."));
+
+        return obj;
+
     }
 
-    @Override
+    public void showAllCustomers() throws CustomerNotFoundException {
+        if (arrayList.isEmpty()) throw new CustomerNotFoundException("No customers available.");
+        arrayList.forEach(System.out::println);
+    }
+
+    //load data
     public void setCustomers(ArrayList<Customer> customers) {
         this.arrayList = customers;
-        Database.saveCustomers(arrayList);
     }
 
-    @Override
-    public void showCustomers() throws CustomerNotFoundException {
-        if (arrayList.isEmpty()) {
-            throw new NullPointerException("No customers found.");
-        }
-        for (Customer c : arrayList) System.out.println(c.toString());
-    }
-
-    @Override
-    public Customer getCustomer(int id) throws CustomerNotFoundException {
-        for (Customer c : arrayList) {
-            if (id == c.getId()) return c;
-        }
-        throw new CustomerNotFoundException("Models.Customer with this ID not found.");
-    }
-
-    @Override
-    public void removeCustomer(int id) throws CustomerNotFoundException {
-        Customer c = getCustomer(id);
-        arrayList.remove(c);
-        Database.saveCustomers(arrayList);
-    }
-
-
-    @Override
-    public void showCustomersOrder(int id) throws CustomerNotFoundException {
-        Customer customer = getCustomer(id);
-        System.out.println(customer);
-    }
 }
-
